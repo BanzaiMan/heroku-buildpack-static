@@ -57,6 +57,12 @@ http {
     }
   <% end %>
 
+  <% proxies.each do |location, hash| %>
+    location <%= location %> {
+      proxy_pass <%= hash['origin'] %>;
+    }
+  <% end %>
+
   <% redirects.each do |path, hash| %>
     location <%= path %> {
       return <%= hash['status'] || 301 %> <%= hash['url'] %>;
@@ -68,12 +74,6 @@ http {
       set $route <%= route %>;
       mruby_set $path /app/bin/config/lib/ngx_mruby/routes.rb cache;
       try_files /$path =404;
-    }
-  <% end %>
-
-  <% proxies.each do |location, hash| %>
-    location <%= location %> {
-      proxy_pass <%= hash['origin'] %>;
     }
   <% end %>
   }
